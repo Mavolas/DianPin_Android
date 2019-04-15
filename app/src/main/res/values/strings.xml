@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DianPin</string>
+
+    <string name="open">open</string>
+    <string name="close">close</string>
+    <string name="rationale_ask_ok">OK</string>
+    <string name="rationale_ask_cancel">Cancel</string>
+    <string name="camera_and_location_rationale">需要拨打电话权限</string>
+</resources>

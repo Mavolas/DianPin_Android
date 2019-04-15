@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_seller_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="大小喜吃匠心集(春熙路店)"
+            />
+
+
+        <TextView
+            android:id="@+id/tv_seller_status"
+            android:layout_alignParentRight="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:text="挂"
+            />
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_seller_area"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="成都美食"
+            />
+
+        <TextView
+            android:id="@+id/tv_seller_type"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="川菜"
+            />
+
+        <TextView
+            android:id="@+id/tv_seller_star"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="五星商户"
+            />
+
+        <TextView
+            android:id="@+id/tv_seller_comment"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="302条点评"
+            />
+
+    </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/tv_seller_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="电话：028-87558161；028-8755816"/>
+
+
+    <TextView
+        android:id="@+id/tv_seller_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="地址：星正科甲巷伊藤洋堂"/>
+
+    <TextView
+        android:id="@+id/tv_seller_remark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="备注：明天打"/>
+
+
+
+</LinearLayout>
