@@ -5,7 +5,7 @@ package com.mavolas.dianpin.bean;
  * Date on 2019-04-15.
  */
 public class Sellers_Item{
-    public String id;
+    public String ID;
     public String area;
     public String type;
     public String name;
@@ -18,7 +18,7 @@ public class Sellers_Item{
 
 
     public Sellers_Item(String id, String area, String type, String name, String star, String phone, String commentCount, String address) {
-        this.id = id;
+        this.ID = id;
         this.area = area;
         this.type = type;
         this.name = name;
@@ -29,7 +29,7 @@ public class Sellers_Item{
     }
 
     public Sellers_Item(String id, String area, String type, String name, String star, String phone, String commentCount, String address, String status, String remark) {
-        this.id = id;
+        this.ID = id;
         this.area = area;
         this.type = type;
         this.name = name;

@@ -4,22 +4,27 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.mavolas.dianpin.R;
 import com.mavolas.dianpin.Seller_Info.adapter.SellerInfoListAdapter;
+import com.mavolas.dianpin.api.SellersApi;
 import com.mavolas.dianpin.bean.Sellers_Item;
+import com.mavolas.dianpin.bean.Sellers_Status;
+import com.mavolas.dianpin.common.ResponseCls;
+import com.mavolas.dianpin.http.client.HttpClient;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
@@ -28,9 +33,16 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * 列表内容Fragment：设施信息 / 车库信息
@@ -39,16 +51,24 @@ public class SellerInfoListContentFragment extends Fragment implements EasyPermi
 
     private SellerInfoListActivity activity;
     private List<Sellers_Item> mList = new ArrayList<>();
+
+    private List<Sellers_Status> mStatus = new ArrayList<>();
     private SellerInfoListAdapter adapter;
     private Button btnSubmit;
     private String mCURDModel = "";
     private int mPositionSelected;
 
     private Date firstQueryTime = new Date();
-    private long pageIndex = 0;
-    private long pageSize = 10;
+    private int pageIndex = 0;
+    private int pageSize = 15;
     private ListView lv;
     RefreshLayout refreshLayout;
+    private SellersApi mSellersApi;
+    private AlertDialog mDialog;
+
+    private String mTag;
+    private int mPosition;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -67,17 +87,24 @@ public class SellerInfoListContentFragment extends Fragment implements EasyPermi
         refreshLayout.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh(RefreshLayout refreshlayout) {
-                refreshlayout.finishRefresh(2000/*,false*/);//传入false表示刷新失败
+                mList.clear();
+                pageIndex = 0;
+                LoadData();
+
+                refreshlayout.finishRefresh(500/*,false*/);//传入false表示刷新失败
             }
         });
         refreshLayout.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(RefreshLayout refreshlayout) {
                 LoadData();
-
-                refreshlayout.finishLoadMore(2000/*,false*/);//传入false表示加载失败
+                refreshlayout.finishLoadMore(100/*,false*/);//传入false表示加载失败
             }
         });
+
+        mSellersApi = HttpClient.retrofit.create(SellersApi.class);
+
+        LoadStatus();
 
 
         //region 侧滑菜单设定
@@ -119,6 +146,23 @@ public class SellerInfoListContentFragment extends Fragment implements EasyPermi
             }
         });
 
+
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+
+                if (mDialog != null) {
+                    mPosition = position;
+                    mDialog.show();
+                } else {
+                    Toast.makeText(getActivity(), "初始化数据错误", Toast.LENGTH_SHORT).show();
+                }
+
+
+                return false;
+            }
+        });
+
         //endregion
 
         LoadData();
@@ -147,24 +191,178 @@ public class SellerInfoListContentFragment extends Fragment implements EasyPermi
     private void LoadData() {
         //LoadDataOnLine();
 
-        for (int i = 0; i < 10; i++) {
+        // 创建网络请求接口的实例
 
-            Sellers_Item item1 = new Sellers_Item("124237022", "成都美食" + i, "川菜", "成都映象(天府二街店)",
-                    "四星商户", "028-85381999", "193条评论", "武侯区天府三街(入口在吉庆一路上)");
+        mSellersApi.getSellers_Info(pageIndex, pageSize).enqueue(new Callback<ResponseCls<List<Sellers_Item>>>() {
+            @Override
+            public void onResponse(Call<ResponseCls<List<Sellers_Item>>> call, Response<ResponseCls<List<Sellers_Item>>> response) {
+                if (response.code() == 200 && response.body() != null) {
 
-            mList.add(item1);
+                    if (response.body().getData() == null || response.body().getData().size() == 0) {
+                        Toast.makeText(activity, "没有数据", Toast.LENGTH_SHORT).show();
 
-            Sellers_Item item = new Sellers_Item("124237022", "成都美食" + i, "川菜", "成都映象(天府二街店)",
-                    "四星商户", "028-85381999;028-85381111", "193条评论", "武侯区天府三街(入口在吉庆一路上)");
+                    } else {
+                        pageIndex++;
+                        mList.addAll(response.body().getData());
+                        adapter.notifyDataSetChanged();
+                    }
+                } else {
+                    Toast.makeText(activity, "加载错误", Toast.LENGTH_SHORT).show();
+                }
+            }
 
-            mList.add(item);
-            adapter.notifyDataSetChanged();
-
-        }
+            @Override
+            public void onFailure(Call<ResponseCls<List<Sellers_Item>>> call, Throwable t) {
+                Toast.makeText(activity, "加载失败", Toast.LENGTH_SHORT).show();
+            }
+        });
 
 
     }
     //endregion
+
+    private void LoadStatus() {
+        //LoadDataOnLine();
+
+        // 创建网络请求接口的实例
+
+        mSellersApi.getSellers_Status().enqueue(new Callback<ResponseCls<List<Sellers_Status>>>() {
+            @Override
+            public void onResponse(Call<ResponseCls<List<Sellers_Status>>> call, Response<ResponseCls<List<Sellers_Status>>> response) {
+                if (response.code() == 200 && response.body() != null) {
+
+                    if (response.body().getData() == null || response.body().getData().size() == 0) {
+                        Toast.makeText(activity, "没有数据", Toast.LENGTH_SHORT).show();
+                    } else {
+                        mStatus.addAll(response.body().getData());
+
+                        StatusAlert();
+                    }
+                } else {
+                    Toast.makeText(activity, "加载错误", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseCls<List<Sellers_Status>>> call, Throwable t) {
+                Toast.makeText(activity, "加载常数失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+
+    private void SaveStatus(String id,String status,String remark) {
+        //LoadDataOnLine();
+
+        // 创建网络请求接口的实例
+
+        mSellersApi.SaveStatus(id,status,remark).enqueue(new Callback<ResponseCls<String>>() {
+            @Override
+            public void onResponse(Call<ResponseCls<String>> call, Response<ResponseCls<String>> response) {
+                if (response.code() == 200 && response.body() != null) {
+
+                    if (response.body().getData() != null && response.body().getData().equals("OK")) {
+                        Toast.makeText(activity, "保存成功", Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        Toast.makeText(activity, "保存出现错误", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(activity, "保存失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseCls<String>> call, Throwable t) {
+                Toast.makeText(activity, "保存失败", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+    }
+
+    private void StatusAlert() {
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        View view = View.inflate(getContext(), R.layout.fragment_dialog_view, null);   // 账号、密码的布局文件，自定义
+        final ChipGroup chipGroup = view.findViewById(R.id.cg_group_status);
+
+        final EditText editText = view.findViewById(R.id.et_item_remark);
+
+        ChipGroup.LayoutParams layoutParams = new ChipGroup.LayoutParams(ChipGroup.LayoutParams.WRAP_CONTENT, ChipGroup.LayoutParams.WRAP_CONTENT);
+
+        for (int i = 0; i < mStatus.size(); i++) {
+
+            Chip chip = new Chip(getActivity());
+            chip.setTag(mStatus.get(i).code);
+            chip.setText(mStatus.get(i).value);
+            chip.setLayoutParams(layoutParams);
+            chip.setCheckedIconResource(R.mipmap.ic_launcher);
+            chip.setId(View.generateViewId());
+            chip.setCheckable(true);
+
+            chipGroup.addView(chip);
+
+            if (i ==0) {
+                chip.setChecked(true);
+            }
+
+        }
+
+
+        chipGroup.setOnCheckedChangeListener(new ChipGroup.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(ChipGroup chipGroup, @IdRes int checkedId) {
+
+            }
+        });
+
+
+        builder.setTitle("输入状态信息");
+
+        mDialog = builder.create();
+
+        mDialog.setView(view);
+        mDialog.setButton(DialogInterface.BUTTON_POSITIVE, "确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                Sellers_Item sellers_item = mList.get(mPosition);
+
+                Chip chip = chipGroup.findViewById(chipGroup.getCheckedChipId());
+                mTag = (String) chip.getTag();
+
+                SaveStatus(sellers_item.ID, mTag,editText.getText().toString());
+
+                sellers_item.status = chip.getText().toString();
+                sellers_item.remark = editText.getText().toString();
+
+
+                mList.remove(mPosition);
+                mList.add(mPosition,sellers_item);
+
+                adapter.notifyDataSetChanged();
+
+                dialog.dismiss();//关闭对话框
+            }
+        });
+        mDialog.setButton(DialogInterface.BUTTON_NEUTRAL, "取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();//关闭对话框
+            }
+        });
+
+        Window dialogWindow = mDialog.getWindow();//获取window对象
+        dialogWindow.setGravity(Gravity.TOP);//设置对话框位置
+        dialogWindow.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);//设置横向全屏
+    }
+
 
     /**
      * 拨打电话（直接拨打电话）
