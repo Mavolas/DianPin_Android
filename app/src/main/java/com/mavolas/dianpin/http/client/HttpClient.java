@@ -13,7 +13,7 @@ public class HttpClient {
             //设置数据解析器
             .addConverterFactory(GsonConverterFactory.create())
             //设置网络请求的Url地址
-            .baseUrl("http://172.17.0.158:1185/api/")
+            .baseUrl("http://118.24.168.216:8001/api/")
             .build();
 
 }
