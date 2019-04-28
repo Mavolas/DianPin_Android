@@ -80,41 +80,6 @@
                 android:background="#e6e5e5"
                 />
 
-            <!-- region: 社区 -->
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:text="所在社区"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    android:gravity="center_vertical"
-                    android:layout_gravity="center_vertical"
-                    />
-
-                <Spinner
-                    android:id="@+id/spinnerCommunityID"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginLeft="90dp"
-                    android:layout_marginRight="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:padding="5dp"
-                    />
-            </RelativeLayout>
-            <!-- endregion -->
-
             <!-- region: 设施ID -->
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -136,7 +101,7 @@
                     />
 
                 <EditText
-                    android:id="@+id/editTextFacilityName"
+                    android:id="@+id/et_filter_name"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true"
@@ -169,15 +134,15 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="类型"
+                    android:text="状态"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:gravity="center_vertical"
                     android:layout_gravity="center_vertical"
                     />
 
-                <Spinner
-                    android:id="@+id/spinnerFacilityType"
+                <com.ziruk.viewitems.spinner.MySpinner
+                    android:id="@+id/sp_filter_status"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_alignParentLeft="true"
@@ -203,7 +168,41 @@
                     android:layout_alignParentLeft="true"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="地址"
+                    android:text="类型"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp"
+                    android:gravity="center_vertical"
+                    android:layout_gravity="center_vertical"
+                    />
+
+                <com.ziruk.viewitems.spinner.MySpinner
+                    android:id="@+id/sp_filter_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="90dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:padding="5dp"
+                    />
+            </RelativeLayout>
+            <!-- endregion -->
+            <!-- region: 设施ID -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="10dp"
+                    android:text="地区"
                     android:textColor="@android:color/black"
                     android:textSize="16sp"
                     android:gravity="center_vertical"
@@ -211,7 +210,7 @@
                     />
 
                 <EditText
-                    android:id="@+id/editTextFacilityAddress"
+                    android:id="@+id/et_filter_area"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true"

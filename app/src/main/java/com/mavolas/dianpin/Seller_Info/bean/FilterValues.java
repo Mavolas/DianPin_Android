@@ -5,21 +5,9 @@ package com.mavolas.dianpin.Seller_Info.bean;
  */
 public class FilterValues {
 
-    /**
-     * 社区
-     */
-    public String CommunityID;
-    /**
-     * 设施ID
-     */
-    public String FacilityName;
-    /**
-     * 设施ID
-     */
-    public String FacilityType;
-    /**
-     * 设施ID
-     */
-    public String FacilityAddress;
+    public String Name;
+    public String Status;
+    public String Type;
+    public String Area;
 
 }

@@ -18,6 +18,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'http://repo2.ziruk.com:8081/nexus/content/repositories/thirdparty/'
+        }
         
     }
 }
