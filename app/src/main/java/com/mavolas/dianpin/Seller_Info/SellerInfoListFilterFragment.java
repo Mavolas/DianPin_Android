@@ -80,13 +80,11 @@ public class SellerInfoListFilterFragment extends Fragment {
 
         final List<CodeValueCls> status = new ArrayList<>();
 
-        status.add(new CodeValueCls("01","已打"));
-        status.add(new CodeValueCls("01","已打"));
-        status.add(new CodeValueCls("01","已打"));
-        status.add(new CodeValueCls("01","已打"));
-        status.add(new CodeValueCls("01","已打"));
-        status.add(new CodeValueCls("01","已打"));
-
+        status.add(new CodeValueCls("1","已拨打"));
+        status.add(new CodeValueCls("2","等下打"));
+        status.add(new CodeValueCls("3","明天打"));
+        status.add(new CodeValueCls("4","不需要"));
+        status.add(new CodeValueCls("5","加微信"));
 
         Status.setDataBindListener(new MySpinner.OnDataBindingBeginListener() {
             @Override
@@ -96,14 +94,30 @@ public class SellerInfoListFilterFragment extends Fragment {
         });
 
 
+        final List<CodeValueCls> type = new ArrayList<>();
+
+        type.add(new CodeValueCls("烧烤","烧烤"));
+        type.add(new CodeValueCls("串串香","串串香"));
+        type.add(new CodeValueCls("川菜","川菜"));
+        type.add(new CodeValueCls("私房菜","私房菜"));
+        type.add(new CodeValueCls("西餐","西餐"));
+        type.add(new CodeValueCls("西餐","西餐"));
+        type.add(new CodeValueCls("粉面馆","粉面馆"));
+        type.add(new CodeValueCls("小龙虾","小龙虾"));
+        type.add(new CodeValueCls("东南亚菜","东南亚菜"));
+        type.add(new CodeValueCls("自助餐","自助餐"));
+        type.add(new CodeValueCls("粤菜","粤菜"));
+
+
         Type.setDataBindListener(new MySpinner.OnDataBindingBeginListener() {
             @Override
             public List<CodeValueCls> getData() {
-
-
-                return null;
+                return type;
             }
         });
+
+        Status.fresh();
+        Type.fresh();
 
 
 

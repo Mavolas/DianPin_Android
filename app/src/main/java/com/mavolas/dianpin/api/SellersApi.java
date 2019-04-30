@@ -6,7 +6,10 @@ import com.mavolas.dianpin.common.ResponseCls;
 
 import java.util.List;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
@@ -17,9 +20,9 @@ import retrofit2.http.Query;
  */
 public interface SellersApi {
 
-    @GET("Sellers/getSellers")
-    Call<ResponseCls<List<Sellers_Item>>> getSellers_Info(@Query("pageIndex") int pageIndex, @Query("pageSize") int pageSize);
-
+    @POST("Sellers/getSellers")
+    Call<ResponseCls<List<Sellers_Item>>> getSellers_Info(@Query("pageIndex") int pageIndex
+            , @Body RequestBody body , @Query("pageSize") int pageSize);
 
     @GET("Values/getStatus")
     Call<ResponseCls<List<Sellers_Status>>> getSellers_Status();

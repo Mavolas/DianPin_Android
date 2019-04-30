@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.gson.Gson;
 import com.mavolas.dianpin.R;
 import com.mavolas.dianpin.Seller_Info.adapter.SellerInfoListAdapter;
 import com.mavolas.dianpin.api.SellersApi;
@@ -31,12 +32,16 @@ import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import pub.devrel.easypermissions.AppSettingsDialog;
 import pub.devrel.easypermissions.EasyPermissions;
 import pub.devrel.easypermissions.PermissionRequest;
@@ -69,12 +74,25 @@ public class SellerInfoListContentFragment extends Fragment implements EasyPermi
     private String mTag;
     private int mPosition;
 
+    private Gson gs = new Gson();
+
+
+    private Map<String, String> POST_PARAMS;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_seller_list, container, false);
 
+
         activity = (SellerInfoListActivity) getActivity();
+
+
+        POST_PARAMS = new HashMap<>();
+        POST_PARAMS.put("area",activity.filterValues.Area);
+        POST_PARAMS.put("type",activity.filterValues.Type);
+        POST_PARAMS.put("name",activity.filterValues.Name);
+        POST_PARAMS.put("status",activity.filterValues.Status);
 
         lv = view.findViewById(R.id.lv_seller_list);
         refreshLayout = (RefreshLayout) view.findViewById(R.id.refreshLayout);
@@ -193,7 +211,16 @@ public class SellerInfoListContentFragment extends Fragment implements EasyPermi
 
         // 创建网络请求接口的实例
 
-        mSellersApi.getSellers_Info(pageIndex, pageSize).enqueue(new Callback<ResponseCls<List<Sellers_Item>>>() {
+        String jsonStr = this.gs.toJson(this.POST_PARAMS);
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json;charset=UTF-8"), jsonStr);
+
+
+        mSellersApi.getSellers_Info(pageIndex,
+                requestBody
+                , pageSize
+
+                ).enqueue(new Callback<ResponseCls<List<Sellers_Item>>>() {
             @Override
             public void onResponse(Call<ResponseCls<List<Sellers_Item>>> call, Response<ResponseCls<List<Sellers_Item>>> response) {
                 if (response.code() == 200 && response.body() != null) {
