@@ -80,6 +80,7 @@ public class SellerInfoListFilterFragment extends Fragment {
 
         final List<CodeValueCls> status = new ArrayList<>();
 
+        status.add(new CodeValueCls("","没状态"));
         status.add(new CodeValueCls("1","已拨打"));
         status.add(new CodeValueCls("2","等下打"));
         status.add(new CodeValueCls("3","明天打"));
@@ -101,12 +102,13 @@ public class SellerInfoListFilterFragment extends Fragment {
         type.add(new CodeValueCls("川菜","川菜"));
         type.add(new CodeValueCls("私房菜","私房菜"));
         type.add(new CodeValueCls("西餐","西餐"));
-        type.add(new CodeValueCls("西餐","西餐"));
         type.add(new CodeValueCls("粉面馆","粉面馆"));
         type.add(new CodeValueCls("小龙虾","小龙虾"));
         type.add(new CodeValueCls("东南亚菜","东南亚菜"));
         type.add(new CodeValueCls("自助餐","自助餐"));
         type.add(new CodeValueCls("粤菜","粤菜"));
+        type.add(new CodeValueCls("日本菜","日本菜"));
+        type.add(new CodeValueCls("火锅","火锅"));
 
 
         Type.setDataBindListener(new MySpinner.OnDataBindingBeginListener() {
